@@ -11,12 +11,14 @@ import (
 )
 
 const (
-	serviceEnv = "../config/service.env"
+	configPath  = "/home/dmitry/Projects/SportTechService/SportTechDockerConfig/"
+	serviceEnv  = "../config/service.env"
+	postgresEnv = configPath + "postgres.env"
 )
 
 func main() {
 
-	utils.Env().Load(serviceEnv)
+	utils.Env().Load(serviceEnv, postgresEnv)
 
 	log.Println("SportTech profile service v." + utils.Env().Value("SERVICE_VERSION"))
 

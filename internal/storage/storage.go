@@ -9,6 +9,7 @@ import (
 
 	proto "github.com/dimon5360/SportTechProtos/gen/go/proto"
 	_ "github.com/lib/pq"
+	"google.golang.org/protobuf/types/known/timestamppb"
 )
 
 type ProfileUsersService struct {
@@ -42,14 +43,38 @@ func (s *ProfileUsersService) Init() {
 	s.db = db
 }
 
-func (s *ProfileUsersService) GetUser(ctx context.Context, req *proto.GetUserRequest) (*proto.UserInfoResponse, error) {
-	return &proto.UserInfoResponse{}, nil
+func invalidProfileResponse(err error) (*proto.UserProfileResponse, error) {
+	return &proto.UserProfileResponse{}, err
 }
 
-func (s *ProfileUsersService) AuthUser(ctx context.Context, req *proto.AuthUserRequest) (*proto.UserInfoResponse, error) {
-	return &proto.UserInfoResponse{}, nil
+func (s *ProfileUsersService) GetProfile(ctx context.Context, req *proto.GetProfileRequest) (*proto.UserProfileResponse, error) {
+
+	profile, err := s.GetProfileByIdFromDatabase(req.UserId)
+	if err != nil {
+		return invalidProfileResponse(err)
+	}
+
+	return &proto.UserProfileResponse{
+		Id:        profile.Id,
+		Username:  profile.Username,
+		Firstname: profile.Firstname,
+		Lastname:  profile.Lastname,
+		CreatedAt: timestamppb.New(profile.Created_at),
+		UpdatedAt: timestamppb.New(profile.Updated_at),
+	}, nil
 }
 
-func (s *ProfileUsersService) CreateUser(ctx context.Context, req *proto.CreateUserRequst) (*proto.UserInfoResponse, error) {
-	return &proto.UserInfoResponse{}, nil
+func (s *ProfileUsersService) CreateProfile(ctx context.Context, req *proto.CreateProfileRequst) (*proto.UserProfileResponse, error) {
+
+	profile, err := s.AddProfileToDatabase(req.Username, req.Firstname, req.Lastname, req.UserId)
+	if err != nil {
+		return invalidProfileResponse(fmt.Errorf("%s: %v", "Failed handling profile data", err))
+	}
+
+	return &proto.UserProfileResponse{
+		Id:        profile.Id,
+		Username:  profile.Username,
+		Firstname: profile.Firstname,
+		Lastname:  profile.Lastname,
+	}, err
 }
