@@ -7,7 +7,7 @@ import (
 	"fmt"
 	"log"
 
-	proto "github.com/dimon5360/SportTechProtos/gen/go/proto"
+	"github.com/dimon5360/SportTechProtos/gen/go/proto"
 	_ "github.com/lib/pq"
 	"google.golang.org/protobuf/types/known/timestamppb"
 )

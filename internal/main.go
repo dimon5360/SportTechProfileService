@@ -35,5 +35,4 @@ func main() {
 	grpcServer := grpc.NewServer(opts...)
 	proto.RegisterProfileUsersServiceServer(grpcServer, service)
 	grpcServer.Serve(lis)
-
 }
